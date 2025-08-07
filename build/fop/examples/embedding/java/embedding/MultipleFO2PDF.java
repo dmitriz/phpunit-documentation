@@ -19,7 +19,8 @@
 
 package embedding;
 
-// Java
+
+import io.github.pixee.security.BoundedLineReader;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
@@ -121,7 +122,7 @@ public class MultipleFO2PDF {
             try {
                 // Listen for the input file name
                 System.out.print("Input XSL-FO file ('quit' to stop): ");
-                String foname = in.readLine();
+                String foname = BoundedLineReader.readLine(in, 5_000_000);
                 if (foname == null) {
                     System.out.println("Null input, quitting");
                     return;

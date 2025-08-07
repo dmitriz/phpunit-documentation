@@ -19,6 +19,7 @@
 
 package org.apache.fop.hyphenation;
 
+import io.github.pixee.security.BoundedLineReader;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -303,20 +304,20 @@ public class HyphenationTreeAnalysis extends TernaryTreeAnalysis {
                              + "q:\tquit\n\n"
                              + "Command:");
             try {
-                String token = in.readLine().trim();
+                String token = BoundedLineReader.readLine(in, 5_000_000).trim();
                 if (token.equals("f")) {
                     System.out.print("Pattern: ");
-                    token = in.readLine().trim();
+                    token = BoundedLineReader.readLine(in, 5_000_000).trim();
                     System.out.println("Values: " + ht.findPattern(token));
                 } else if (token.equals("s")) {
                     System.out.print("Minimum value: ");
-                    token = in.readLine().trim();
+                    token = BoundedLineReader.readLine(in, 5_000_000).trim();
                     minCharCount = Integer.parseInt(token);
                 } else if (token.equals("l")) {
                     ht = new HyphenationTree();
                     hta = new HyphenationTreeAnalysis(ht);
                     System.out.print("XML file name: ");
-                    token = in.readLine().trim();
+                    token = BoundedLineReader.readLine(in, 5_000_000).trim();
                     try {
                         ht.loadPatterns(token);
                     } catch (HyphenationException e) {
@@ -325,7 +326,7 @@ public class HyphenationTreeAnalysis extends TernaryTreeAnalysis {
                 } else if (token.equals("L")) {
                     ObjectInputStream ois = null;
                     System.out.print("Object file name: ");
-                    token = in.readLine().trim();
+                    token = BoundedLineReader.readLine(in, 5_000_000).trim();
                     try {
                         String[] parts = token.split(":");
                         InputStream is = null;
@@ -352,7 +353,7 @@ public class HyphenationTreeAnalysis extends TernaryTreeAnalysis {
                     }
                 } else if (token.equals("w")) {
                     System.out.print("Object file name: ");
-                    token = in.readLine().trim();
+                    token = BoundedLineReader.readLine(in, 5_000_000).trim();
                     ObjectOutputStream oos = null;
                     try {
                         oos = new ObjectOutputStream(new FileOutputStream(token));
@@ -383,7 +384,7 @@ public class HyphenationTreeAnalysis extends TernaryTreeAnalysis {
                     System.out.print(hta.toTree());
                 } else if (token.equals("h")) {
                     System.out.print("Word: ");
-                    token = in.readLine().trim();
+                    token = BoundedLineReader.readLine(in, 5_000_000).trim();
                     System.out.print("Hyphenation points: ");
                     System.out.println(ht.hyphenate(token, minCharCount,
                                                     minCharCount));
@@ -393,7 +394,7 @@ public class HyphenationTreeAnalysis extends TernaryTreeAnalysis {
                         break;
                     }
                     System.out.print("Word list filename: ");
-                    token = in.readLine().trim();
+                    token = BoundedLineReader.readLine(in, 5_000_000).trim();
                     long starttime = 0;
                     int counter = 0;
                     try {
@@ -401,7 +402,7 @@ public class HyphenationTreeAnalysis extends TernaryTreeAnalysis {
                         String line;
 
                         starttime = System.currentTimeMillis();
-                        while ((line = reader.readLine()) != null) {
+                        while ((line = BoundedLineReader.readLine(reader, 5_000_000)) != null) {
                             // System.out.print("\nline: ");
                             Hyphenation hyp = ht.hyphenate(line, minCharCount,
                                                            minCharCount);
